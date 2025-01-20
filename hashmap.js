@@ -1,21 +1,21 @@
 import LinkedList from "./linked_list.js";
 
 class HashMap {
-  buckets = new Array(16);
-
   loadFactor = 0.8;
-  capacity = this.buckets.length;
+  capacity = 16;
   
-  growthFactor = () => this.loadFactor * this.capacity;
+  buckets = new Array(this.capacity);
+  
+  items = 0;
 
   hash(key) {
     let hashCode = 0;
-       
+
     const primeNumber = 31;
     for (let i = 0; i < key.length; i++) {
       hashCode = (primeNumber * hashCode + key.charCodeAt(i)) % this.capacity;
     }
-  
+
     return hashCode;
   }
 
@@ -23,7 +23,7 @@ class HashMap {
   // If a key already exists, then the old value is overwritten
   // Remember to grow your buckets to double their capacity when your hash map reaches the load factor.
   set(key, value) {
-    if (!key) return
+    if (!key) return;
 
     // Hash key
     const hashcode = this.hash(key);
@@ -39,11 +39,44 @@ class HashMap {
 
     // If key already exists, overwrite
     // Else append node to the end of list
-    bucket.set(key, value);
+    this.items += bucket.set(key, value);
+
     
-    return true
+    return true;
   }
   
+  grow() {
+    const needToGrow = (this.items / this.capacity) > this.loadFactor;
+    if (!needToGrow) return;
+
+    // Reset items count
+    this.items = 0;
+
+    // Create a new reference to current buckets array
+    // Retrieve and store a reference to all of its nodes
+    let currentArr = this.buckets;
+    const nodes = this.entries();
+
+    // Double the current hashmap capacity property
+    // Create a new array with new capacity size
+    // Set it as new buckets array
+    this.capacity *= 2;
+    console.log('Capacity: ' + this.capacity)
+    let copyArr = new Array(this.capacity);
+    console.log('Copy array length: ' + copyArr.length)
+
+    this.buckets = copyArr;
+
+    // Copy all nodes to new copy array
+    for (let node of nodes) {
+      this.set(node[0], node[1]);
+    }
+
+    // By deleting the only reference to the replaced array
+    // JS garbage collector free ups the memory it was using
+    currentArr = null;
+  }
+
   // collisions occur when TWO DIFFERENT keys generate the same hash code
   // and get assigned to the same bucket
   // However, we know that this is not an update because the keys are different
@@ -51,12 +84,12 @@ class HashMap {
   // takes one argument as a key and returns the value that is assigned to this key.
   // If a key is not found, return null.
   get(key) {
-    if (!key) return
+    if (!key) return;
 
     const hashcode = this.hash(key);
 
     let bucket = this.buckets[hashcode];
-    if (!bucket) return null
+    if (!bucket) return null;
 
     return bucket.get(key);
   }
@@ -64,7 +97,7 @@ class HashMap {
   // takes a key as an argument and returns true or false
   // based on whether or not the key is in the hash map.
   has(key) {
-    if (!key) return
+    if (!key) return;
 
     const hashcode = this.hash(key);
 
@@ -78,7 +111,7 @@ class HashMap {
   // it should remove the entry with that key and return true.
   // If the key isn’t in the hash map, it should return false.
   remove(key) {
-    if (!key) return
+    if (!key) return;
 
     const hashcode = this.hash(key);
 
@@ -90,32 +123,39 @@ class HashMap {
 
   // returns the number of stored keys in the hash map.
   length() {
-    const hashcode = this.hash(key);
+    let total = 0;
 
-    let bucket = this.buckets[hashcode];
-    if (!bucket) return null;
+    for (let bucket of this.buckets) {
+      if (!bucket) continue;
 
-    return bucket.size();
+      total += bucket.size();
+    }
+
+    return total;
   }
 
   // removes all entries in the hash map.
   clear() {
     for (let bucket of this.buckets) {
-      if (!bucket) { continue };
+      if (!bucket) {
+        continue;
+      }
 
-      bucket.clear()
+      bucket.clear();
     }
 
-    return true
+    return true;
   }
 
   // returns an array containing all the keys inside the hash map.
   keys() {
     let arr = [];
     for (let bucket of this.buckets) {
-      if (!bucket) { continue };
+      if (!bucket) {
+        continue;
+      }
 
-      arr.push(...bucket.keys())
+      arr.push(...bucket.keys());
     }
     return arr;
   }
@@ -124,9 +164,11 @@ class HashMap {
   values() {
     let arr = [];
     for (let bucket of this.buckets) {
-      if (!bucket) { continue };
+      if (!bucket) {
+        continue;
+      }
 
-      arr.push(...bucket.values())
+      arr.push(...bucket.values());
     }
     return arr;
   }
@@ -136,11 +178,28 @@ class HashMap {
   entries() {
     let arr = [];
     for (let bucket of this.buckets) {
-      if (!bucket) { continue };
+      if (!bucket) {
+        continue;
+      }
 
-      arr.push(...bucket.entries())
+      arr.push(...bucket.entries());
     }
     return arr;
+  }
+
+  log() {
+    let i = 0;
+    for (let bucket of this.buckets) {
+      if (!bucket) {
+        console.log("null " + i++);
+        console.log();
+        continue;
+      }
+
+      console.log(bucket.toString());
+      console.log();
+    }
+    return
   }
 }
 

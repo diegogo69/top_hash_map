@@ -46,26 +46,36 @@ class LinkedList {
     return null;
   }
 
-  // returns the index of the node containing value, or null if not found.
+  // If key is found in linked list, the node's value is overwritten
+  // Else a new node is added to the linked list
+  // Return 1 when new node is added. Return 0 when it's overwritten
+
   set(key, value) {
     if (this.headNode === null) {
       this.prepend(key, value);
-      return;
+      return 1;
     }
 
     let tmp = this.headNode;
-    if (tmp.key === key) return (tmp.value = value);
+    if (tmp.key === key) {
+      (tmp.value = value);
+      return 0
+    } 
 
     // Traverse list looking for key collision
     // If key collision overwrite its value
     // Else append key-value pair node at the end of list
     while (tmp.nextNode !== null) {
-      if (tmp.key === key) return (tmp.value = value);
+      if (tmp.key === key) {
+        tmp.value = value;
+        return 0
+      } 
 
       tmp = tmp.nextNode;
     }
 
     tmp.nextNode = new Node(key, value);
+    return 1;
   }
 
   // returns true if the passed in key is in the list and otherwise returns false.
