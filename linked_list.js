@@ -4,9 +4,9 @@ import Node from "./node.js";
 class LinkedList {
   headNode = null;
 
-  prepend(value) {
+  prepend(key, value) {
     // New node reference headNode node
-    const node = new Node(value, this.headNode);
+    const node = new Node(key, value, this.headNode);
 
     // HeadNode node reference new node
     this.headNode = node;
@@ -14,14 +14,13 @@ class LinkedList {
 
   // adds a new node containing value to the end of the list
   append(value) {
-    const node = new Node(value);
-
     // If head == null. Prepend node as first list item
     if (this.headNode === null) {
       this.prepend(value);
       return;
     }
-
+    
+    const node = new Node(value);
     let tmp = this.headNode;
 
     while (tmp.nextNode !== null) {
@@ -123,7 +122,7 @@ class LinkedList {
   }
 
   // returns the index of the node containing value, or null if not found.
-  find(value) {
+  findValue(value) {
     if (this.headNode === null) return null;
 
     let i = 0;
@@ -137,6 +136,61 @@ class LinkedList {
     }
 
     return null;
+  }
+
+  // returns the index of the node containing value, or null if not found.
+  findKey(key) {
+    if (this.headNode === null) return null;
+
+    let i = 0;
+    let tmp = this.headNode;
+
+    while (tmp !== null) {
+      if (tmp.key === key) return i;
+
+      tmp = tmp.nextNode;
+      i++;
+    }
+
+    return null;
+  }
+
+  // returns the index of the node containing value, or null if not found.
+  get(key) {
+    if (this.headNode === null) return null;
+
+    let tmp = this.headNode;
+
+    while (tmp !== null) {
+      if (tmp.key === key) return tmp.value;
+
+      tmp = tmp.nextNode;
+    }
+
+    return null;
+  }
+
+  // returns the index of the node containing value, or null if not found.
+  set(key, value) {
+    if (this.headNode === null) {
+      this.prepend(key, value);
+    };
+
+    let tmp = this.headNode;
+
+    // Traverse list looking for key collision
+    // If key collision overwrite its value
+    // Else append key-value pair node at the end of list 
+    while (tmp.nextNode !== null) {
+      if (tmp.key === key) {
+        tmp.value = value;
+        return
+      };
+
+      tmp = tmp.nextNode;
+    }
+
+    tmp.nextNode = new Node(key, value);
   }
 
   // represents your LinkedList objects as strings,
