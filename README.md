@@ -1,0 +1,1 @@
+Create a hashmap like structure with built in functionality as part of The Odin Project Curriculum
