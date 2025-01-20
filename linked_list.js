@@ -272,19 +272,18 @@ class LinkedList {
   set(key, value) {
     if (this.headNode === null) {
       this.prepend(key, value);
+      return 
     };
 
     let tmp = this.headNode;
+    if (tmp.key === key) return (tmp.value = value);
 
     // Traverse list looking for key collision
     // If key collision overwrite its value
     // Else append key-value pair node at the end of list 
     while (tmp.nextNode !== null) {
-      if (tmp.key === key) {
-        tmp.value = value;
-        return
-      };
-
+      if (tmp.key === key) return (tmp.value = value);
+        
       tmp = tmp.nextNode;
     }
 
