@@ -55,40 +55,71 @@ class HashMap {
   // takes a key as an argument and returns true or false
   // based on whether or not the key is in the hash map.
   has(key) {
+    let bucket = this.buckets[hashcode];
+    if (!bucket) return null;
 
+    return bucket.has(key);
   }
 
   // takes a key as an argument. If the given key is in the hash map,
   // it should remove the entry with that key and return true.
   // If the key isn’t in the hash map, it should return false.
   remove(key) {
+    let bucket = this.buckets[hashcode];
+    if (!bucket) return null;
 
+    return bucket.remove(key);
   }
 
   // returns the number of stored keys in the hash map.
   length() {
+    let bucket = this.buckets[hashcode];
+    if (!bucket) return null;
 
+    return bucket.size();
   }
 
   // removes all entries in the hash map.
   clear() {
+    for (let bucket of this.buckets) {
+      if (!bucket) { continue };
 
+      bucket.clear()
+    }
   }
 
   // returns an array containing all the keys inside the hash map.
   keys() {
+    let arr = [];
+    for (let bucket of this.buckets) {
+      if (!bucket) { continue };
 
+      arr.push(...bucket.keys())
+    }
+    return arr;
   }
 
   // returns an array containing all the values.
   values() {
+    let arr = [];
+    for (let bucket of this.buckets) {
+      if (!bucket) { continue };
 
+      arr.push(...bucket.values())
+    }
+    return arr;
   }
 
   // returns an array that contains each key, value pair.
   // Example: [[firstKey, firstValue], [secondKey, secondValue]]
   entries() {
+    let arr = [];
+    for (let bucket of this.buckets) {
+      if (!bucket) { continue };
 
+      arr.push(...bucket.entries())
+    }
+    return arr;
   }
 }
 
