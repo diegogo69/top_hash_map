@@ -19,7 +19,7 @@ class LinkedList {
       this.prepend(value);
       return;
     }
-    
+
     const node = new Node(value);
     let tmp = this.headNode;
 
@@ -29,6 +29,141 @@ class LinkedList {
 
     // node by default references null
     tmp.nextNode = node;
+  }
+
+  // returns the index of the node containing value, or null if not found.
+  get(key) {
+    if (this.headNode === null) return null;
+
+    let tmp = this.headNode;
+
+    while (tmp !== null) {
+      if (tmp.key === key) return tmp.value;
+
+      tmp = tmp.nextNode;
+    }
+
+    return null;
+  }
+
+  // returns the index of the node containing value, or null if not found.
+  set(key, value) {
+    if (this.headNode === null) {
+      this.prepend(key, value);
+      return;
+    }
+
+    let tmp = this.headNode;
+    if (tmp.key === key) return (tmp.value = value);
+
+    // Traverse list looking for key collision
+    // If key collision overwrite its value
+    // Else append key-value pair node at the end of list
+    while (tmp.nextNode !== null) {
+      if (tmp.key === key) return (tmp.value = value);
+
+      tmp = tmp.nextNode;
+    }
+
+    tmp.nextNode = new Node(key, value);
+  }
+
+  // returns true if the passed in key is in the list and otherwise returns false.
+  has(key) {
+    if (this.headNode === null) return false;
+
+    let tmp = this.headNode;
+
+    while (tmp !== null) {
+      if (tmp.key === key) return true;
+
+      tmp = tmp.nextNode;
+    }
+
+    return false;
+  }
+
+  // returns true if the passed in key is in the list and otherwise returns false.
+  remove(key) {
+    // If head is null, there is no list. Throw error
+    if (this.headNode === null) return false;
+
+    // If list has only one element
+    if (this.headNode.key === key) {
+      this.headNode = null;
+      return true;
+    }
+
+    let prev = this.headNode;
+    let tmp = this.headNode.nextNode;
+
+    while (tmp !== null) {
+      if (tmp.key === key) {
+        prev.nextNode = tmp.nextNode;
+        return true;
+      }
+
+      prev = tmp;
+      tmp = tmp.nextNode;
+    }
+
+    return false;
+  }
+
+  // removes reference to all nodes
+  clear() {
+    this.headNode = null;
+  }
+
+  // returns an array containing all the keys inside the linked list
+  keys() {
+    let arr = [];
+
+    if (this.headNode === null) return arr;
+
+    let tmp = this.headNode;
+
+    while (tmp !== null) {
+      arr.push(tmp.key);
+
+      tmp = tmp.nextNode;
+    }
+
+    return arr;
+  }
+
+  // returns an array containing all the values inside the linked list
+  values() {
+    let arr = [];
+
+    if (this.headNode === null) return arr;
+
+    let tmp = this.headNode;
+
+    while (tmp !== null) {
+      arr.push(tmp.value);
+
+      tmp = tmp.nextNode;
+    }
+
+    return arr;
+  }
+
+  // returns an array containing all the key-value pairs inside the linked list
+  entries() {
+    let arr = [];
+
+    if (!this.headNode) return arr;
+
+    let tmp = this.headNode;
+
+    while (tmp !== null) {
+      arr.push([tmp.key, tmp.value]);
+
+      tmp = tmp.nextNode;
+    }
+
+    return arr;
   }
 
   // returns the total number of nodes in the list
@@ -121,53 +256,6 @@ class LinkedList {
     return false;
   }
 
-  // removes reference to all nodes
-  clear() {
-    this.headNode = null;
-  }
-
-  // returns true if the passed in key is in the list and otherwise returns false.
-  has(key) {
-    if (this.headNode === null) return false;
-
-    let tmp = this.headNode;
-
-    while (tmp !== null) {
-      if (tmp.key === key) return true;
-
-      tmp = tmp.nextNode;
-    }
-
-    return false;
-  }
-
-  // returns true if the passed in key is in the list and otherwise returns false.
-  remove(key) {
-    // If head is null, there is no list. Throw error
-    if (this.headNode === null) return false;
-
-    // If list has only one element
-    if (this.headNode.key === key) {
-      this.headNode = null;
-      return true;
-    }
-    
-    let prev = this.headNode;
-    let tmp = this.headNode.nextNode;
-
-    while (tmp !== null) {
-      if (tmp.key === key) {
-        prev.nextNode = tmp.nextNode;
-        return true;
-      }
-
-      prev = tmp;
-      tmp = tmp.nextNode;
-    }
-
-    return false;
-  }
-
   // returns the index of the node containing value, or null if not found.
   findValue(value) {
     if (this.headNode === null) return null;
@@ -200,94 +288,6 @@ class LinkedList {
     }
 
     return null;
-  }
-
-  // returns an array containing all the keys inside the linked list
-  keys() {
-    let arr = [];
-
-    if (this.headNode === null) return arr;
-
-    let tmp = this.headNode;
-
-    while (tmp !== null) {
-      arr.push(tmp.key);
-
-      tmp = tmp.nextNode;
-    }
-
-    return arr;
-  }
-
-  // returns an array containing all the values inside the linked list
-  values() {
-    let arr = [];
-
-    if (this.headNode === null) return arr;
-
-    let tmp = this.headNode;
-
-    while (tmp !== null) {
-      arr.push(tmp.value);
-
-      tmp = tmp.nextNode;
-    }
-
-    return arr;
-  }
-
-  // returns an array containing all the key-value pairs inside the linked list
-  entries() {
-    let arr = [];
-
-    if (!this.headNode) return arr;
-
-    let tmp = this.headNode;
-
-    while (tmp !== null) {
-      arr.push([tmp.key, tmp.value]);
-
-      tmp = tmp.nextNode;
-    }
-
-    return arr;
-  }
-
-  // returns the index of the node containing value, or null if not found.
-  get(key) {
-    if (this.headNode === null) return null;
-
-    let tmp = this.headNode;
-
-    while (tmp !== null) {
-      if (tmp.key === key) return tmp.value;
-
-      tmp = tmp.nextNode;
-    }
-
-    return null;
-  }
-
-  // returns the index of the node containing value, or null if not found.
-  set(key, value) {
-    if (this.headNode === null) {
-      this.prepend(key, value);
-      return 
-    };
-
-    let tmp = this.headNode;
-    if (tmp.key === key) return (tmp.value = value);
-
-    // Traverse list looking for key collision
-    // If key collision overwrite its value
-    // Else append key-value pair node at the end of list 
-    while (tmp.nextNode !== null) {
-      if (tmp.key === key) return (tmp.value = value);
-        
-      tmp = tmp.nextNode;
-    }
-
-    tmp.nextNode = new Node(key, value);
   }
 
   // represents your LinkedList objects as strings,

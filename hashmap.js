@@ -1,4 +1,4 @@
-import LinkedList from "./linked_list";
+import LinkedList from "./linked_list.js";
 
 class HashMap {
   buckets = new Array(16);
@@ -23,12 +23,15 @@ class HashMap {
   // If a key already exists, then the old value is overwritten
   // Remember to grow your buckets to double their capacity when your hash map reaches the load factor.
   set(key, value) {
+    if (!key) return
+
     // Hash key
     const hashcode = this.hash(key);
 
     // Hash code is index. Now insert in bucket of that index
     // Buckets are link list. So if undefined. Init linked list
     let bucket = this.buckets[hashcode];
+
     if (!bucket) {
       this.buckets[hashcode] = new LinkedList();
       bucket = this.buckets[hashcode];
@@ -36,7 +39,9 @@ class HashMap {
 
     // If key already exists, overwrite
     // Else append node to the end of list
-    bucket.set(key, value);    
+    bucket.set(key, value);
+    
+    return true
   }
   
   // collisions occur when TWO DIFFERENT keys generate the same hash code
@@ -46,6 +51,10 @@ class HashMap {
   // takes one argument as a key and returns the value that is assigned to this key.
   // If a key is not found, return null.
   get(key) {
+    if (!key) return
+
+    const hashcode = this.hash(key);
+
     let bucket = this.buckets[hashcode];
     if (!bucket) return null
 
@@ -55,6 +64,10 @@ class HashMap {
   // takes a key as an argument and returns true or false
   // based on whether or not the key is in the hash map.
   has(key) {
+    if (!key) return
+
+    const hashcode = this.hash(key);
+
     let bucket = this.buckets[hashcode];
     if (!bucket) return null;
 
@@ -65,6 +78,10 @@ class HashMap {
   // it should remove the entry with that key and return true.
   // If the key isn’t in the hash map, it should return false.
   remove(key) {
+    if (!key) return
+
+    const hashcode = this.hash(key);
+
     let bucket = this.buckets[hashcode];
     if (!bucket) return null;
 
@@ -73,6 +90,8 @@ class HashMap {
 
   // returns the number of stored keys in the hash map.
   length() {
+    const hashcode = this.hash(key);
+
     let bucket = this.buckets[hashcode];
     if (!bucket) return null;
 
@@ -86,6 +105,8 @@ class HashMap {
 
       bucket.clear()
     }
+
+    return true
   }
 
   // returns an array containing all the keys inside the hash map.
