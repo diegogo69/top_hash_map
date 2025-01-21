@@ -3,10 +3,10 @@ import LinkedList from "./linked_list.js";
 class HashMap {
   loadFactor = 0.8;
   capacity = 16;
-  
+
   buckets = new Array(this.capacity);
-  
-  items = 0;
+
+  nodesCount = 0;
 
   hash(key) {
     let hashCode = 0;
@@ -26,31 +26,36 @@ class HashMap {
     if (!key) return;
 
     // Hash key
-    const hashcode = this.hash(key);
+    const hashIndex = this.hash(key);
+    if (hashIndex < 0 || hashIndex >= this.buckets.length) {
+      throw new Error("Trying to access index out of bounds");
+    }
 
     // Hash code is index. Now insert in bucket of that index
     // Buckets are link list. So if undefined. Init linked list
-    let bucket = this.buckets[hashcode];
+    let bucket = this.buckets[hashIndex];
 
     if (!bucket) {
-      this.buckets[hashcode] = new LinkedList();
-      bucket = this.buckets[hashcode];
+      this.buckets[hashIndex] = new LinkedList();
+      bucket = this.buckets[hashIndex];
     }
 
     // If key already exists, overwrite
     // Else append node to the end of list
-    this.items += bucket.set(key, value);
+    this.nodesCount += bucket.set(key, value);
 
-    
+    this.grow();
+     
     return true;
   }
-  
-  grow() {
-    const needToGrow = (this.items / this.capacity) > this.loadFactor;
-    if (!needToGrow) return;
 
-    // Reset items count
-    this.items = 0;
+  // Check if the number of nodes in the hashmap exceeds the loadFactor
+  // If it doesn't return out of the function inmediately
+  // Else create and populate a new array double the size of buckets
+  // With all of the existing nodes
+  grow() {
+    const needToGrow = (this.nodesCount / this.capacity) >= this.loadFactor;
+    if (!needToGrow) return;
 
     // Create a new reference to current buckets array
     // Retrieve and store a reference to all of its nodes
@@ -61,13 +66,12 @@ class HashMap {
     // Create a new array with new capacity size
     // Set it as new buckets array
     this.capacity *= 2;
-    console.log('Capacity: ' + this.capacity)
     let copyArr = new Array(this.capacity);
-    console.log('Copy array length: ' + copyArr.length)
-
     this.buckets = copyArr;
 
+    // Reset nodesCount count to zero
     // Copy all nodes to new copy array
+    this.nodesCount = 0;
     for (let node of nodes) {
       this.set(node[0], node[1]);
     }
@@ -77,18 +81,17 @@ class HashMap {
     currentArr = null;
   }
 
-  // collisions occur when TWO DIFFERENT keys generate the same hash code
-  // and get assigned to the same bucket
-  // However, we know that this is not an update because the keys are different
-
   // takes one argument as a key and returns the value that is assigned to this key.
   // If a key is not found, return null.
   get(key) {
     if (!key) return;
 
-    const hashcode = this.hash(key);
+    const hashIndex = this.hash(key);
+    if (hashIndex < 0 || hashIndex >= this.buckets.length) {
+      throw new Error("Trying to access index out of bounds");
+    }
 
-    let bucket = this.buckets[hashcode];
+    let bucket = this.buckets[hashIndex];
     if (!bucket) return null;
 
     return bucket.get(key);
@@ -99,9 +102,12 @@ class HashMap {
   has(key) {
     if (!key) return;
 
-    const hashcode = this.hash(key);
+    const hashIndex = this.hash(key);
+    if (hashIndex < 0 || hashIndex >= this.buckets.length) {
+      throw new Error("Trying to access index out of bounds");
+    }
 
-    let bucket = this.buckets[hashcode];
+    let bucket = this.buckets[hashIndex];
     if (!bucket) return null;
 
     return bucket.has(key);
@@ -113,9 +119,12 @@ class HashMap {
   remove(key) {
     if (!key) return;
 
-    const hashcode = this.hash(key);
+    const hashIndex = this.hash(key);
+    if (hashIndex < 0 || hashIndex >= this.buckets.length) {
+      throw new Error("Trying to access index out of bounds");
+    }
 
-    let bucket = this.buckets[hashcode];
+    let bucket = this.buckets[hashIndex];
     if (!bucket) return null;
 
     return bucket.remove(key);
@@ -199,7 +208,7 @@ class HashMap {
       console.log(bucket.toString());
       console.log();
     }
-    return
+    return;
   }
 }
 
